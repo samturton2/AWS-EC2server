@@ -4,6 +4,29 @@ This Read me will walk through the steps of setting up an EC2 instance in AWS. N
 
 ![](img/awsec2.jpg)
 
+## What is the cloud?
+The cloud is a metaphor for a global network of remote servers that operates as a single ecosystem, commonly associated with the internet.
+### Benefits of the Cloud
+- **No capital costs** - There are high capital costs associated with servers which can be avoided by using cloud services like AWS.
+- **No maintainance costs** - The physical servers are located in data centers and therefore the cost of maintainance as well as repairs is offset to the owner of the data center.
+- **Scalability** - Pay for what you will use, allows you to scale your infrastructure based on what you need.
+- **Security** - The data center owner is responsible for physical security of the servers therefore you don't have to hire security guards to protect your own servers.
+
+## AWS and EC2
+Amazon web services is a cloud platform which provides on demand cloud computing and other features. It offers Platform as a service and Infrastructure as a service (PaaS and Iaas).
+EC2 is a feature of AWS that allows access to a scalable virtual cluster of computors. It stands for amazon elastic compute cloud.
+
+## Security Group(SG)
+This acts as a virtual firewall for your EC2 instances to control incoming and outgoin traffic.
+
+- To open a port  to your Ip you can add security groups when creating your aws instance and specify which ports you want to point towards your IP.
+- You shouldnt have port 22 open to all ips because its the port used for your ssh and is responsible for secure logins, file transfers and port forwarding. Giving everyone access to this port could compimise your systems security and allow outside access to your machine.
+
+## SSH keys
+- You should keep your SSH keys in a secure place that follows these recommendations:
+  - offline
+  - Away from any data its related to 
+  - Inside a hidden folder
 
 # Instructions
 ## Launch Instance
@@ -22,7 +45,7 @@ This Read me will walk through the steps of setting up an EC2 instance in AWS. N
 ![](img/chooseinstance.png)
 
 ## Step 3
-- Configureing the instance details means we choose the network and the subnet.
+- Configuring the instance details means we choose the network and the subnet.
 - Most of the settings we can keep as default for now.
 - The network I am using is the DevOpsStudents default
 - Auto assign public IP is set to enabled
