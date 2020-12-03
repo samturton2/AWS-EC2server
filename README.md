@@ -113,15 +113,11 @@ scp -i ~/.ssh/eng74samawskey.pem -rp Jenkins_DEV_ENV-Sparta_node_app/environment
 sudo apt-get update -y
 sudo apt-get install -y dos2unix
 ```
-- Then convert both the provision files
+- Then convert the provision files
 ```bash
-dos2unix environment/app/provision.sh environment/db/provision.sh
+dos2unix environment/app/provision.sh
 ```
 - Just a warning that the paths of the provisions need to be double checked
-### Running the db
-- `cd environment/db` 
-- make sure `sudo apt update` first
-- and run `./provision.sh` to start the db
 
 ### Running the app
 - `cd app/` (this isnt in environment this is in the main folder)
@@ -150,3 +146,19 @@ sudo cp override.conf /etc/systemd/system/nginx.service.d/
 systemctl daemon-reload
 systemctl restart nginx 
 ```
+
+# Connecting the db
+## Another EC2 server
+- Follow the steps above to create another EC2 server.
+- For step 1 make your you find an ubuntu 16.04 os because the commands for setting up mongodb 3.2.2 work in a Xenial environment.
+- For step 6 only add the private security ssh port 22 and add a customn port 27017 which allows all to listen (ip 0.0.0.0)
+- Then ssh into the instance, and copy and paste the commands from the provision.sh db file.
+- You can either scp the config file into the vm or you can go into mongo.conf manually and change the bind ip to 0.0.0.0 using the sudo command.
+- On the app ec2 server you should run this command
+```bash
+echo "export DB_HOST=<db server public ip>" >> ~/.bashrc
+source ~/.bashrc
+```
+- you can then pm2 start the app and the posts page should be working.
+
+![](img/postspage.png)
