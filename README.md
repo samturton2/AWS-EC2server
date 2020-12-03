@@ -4,6 +4,7 @@ This Read me will walk through the steps of setting up an EC2 instance in AWS. N
 
 ![](img/awsec2.jpg)
 
+
 # Instructions
 ## Launch Instance
 - Log in, and on the drop down make sure you are in the area you want your cloud server to run.
@@ -67,3 +68,62 @@ ssh -i <name of key> ubuntu@<your Public IP4 address>
 ![](img/publicipv4.png)
 
 - Type yes in the terminal to continue connecting and you should enter the terminal of your EC2.
+
+
+# Getting our node app into the server
+- Adding the app to our server can be done with this command from an appropriate directory
+```bash
+scp -i ~/.ssh/eng74samawskey.pem -rp Jenkins_DEV_ENV-Sparta_node_app/app ubuntu@54.154.137.16:~/
+```
+- Make sure the node modules folder is deleted other wise it will take too long to copy over.
+
+- Add both the provision files to the server aswell
+```bash
+scp -i ~/.ssh/eng74samawskey.pem -rp Jenkins_DEV_ENV-Sparta_node_app/environment/ ubuntu@54.154.137.16:~/
+```
+- We can now need to enter the vm
+
+### dos2unix
+- I made my provision files in windows so will need to convert them to unix files before running them
+- This can be done with the `dos2unix` command
+```bash
+sudo apt-get update -y
+sudo apt-get install -y dos2unix
+```
+- Then convert both the provision files
+```bash
+dos2unix environment/app/provision.sh environment/db/provision.sh
+```
+- Just a warning that the paths of the provisions need to be double checked
+### Running the db
+- `cd environment/db` 
+- make sure `sudo apt update` first
+- and run `./provision.sh` to start the db
+
+### Running the app
+- `cd app/` (this isnt in environment this is in the main folder)
+- ls should show you the app.js file
+- if so you can run the provision.sh file from here using
+```bash
+./../environment/app/provision.sh 
+```
+![](img/apprunningterminal.png)
+
+## Debugging
+- For some reason this time round my app wasn't running.
+- I doubled checked to see if it was even running on my server with
+```bash
+curl <privateip>:3000
+```
+- To fix this i killed pm2 `pm2 kill` and then ran `npm install` and `npm start` from the app folder.
+
+
+- On the `sudo systemctl status nginx.service` command it had the error message 'failed to parse pid from file'
+- This is a well known bug and can be fixed with these commands from your home directory
+```bash
+mkdir /etc/systemd/system/nginx.service.d
+printf "[Service]\nExecStartPost=/bin/sleep 0.1\n" > override.conf
+sudo cp override.conf /etc/systemd/system/nginx.service.d/
+systemctl daemon-reload
+systemctl restart nginx 
+```
